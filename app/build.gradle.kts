@@ -14,7 +14,7 @@ android {
         minSdk = libs.versions.min.sdk.get().toInt()
         targetSdk = libs.versions.target.sdk.get().toInt()
         versionCode = 1
-        versionName = "1.0"
+        versionName = "1.0.1"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         vectorDrawables {
@@ -88,7 +88,7 @@ dependencies {
     implementation(libs.cpp)
 
     //PayWings Android SDK
-    implementation("com.paywings.kyc:android-sdk:1.0.0")
+    implementation("com.paywings.kyc:android-sdk:1.0.1")
     implementation("com.paywings.oauth:android-sdk:2.0.0")
 
 

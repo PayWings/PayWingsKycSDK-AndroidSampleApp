@@ -9,7 +9,7 @@ hiltGradlePlugin = "2.48"
 
 major = "1"
 minor = "0"
-patch = "0"
+patch = "1"
 
 daggerHilt = "2.48.1"
 
