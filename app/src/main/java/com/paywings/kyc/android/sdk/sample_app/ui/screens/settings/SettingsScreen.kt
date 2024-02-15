@@ -26,8 +26,10 @@ import com.jamal.composeprefs3.ui.prefs.EditTextPref
 import com.paywings.kyc.android.sdk.sample_app.R
 import com.paywings.kyc.android.sdk.sample_app.dataStore
 import com.paywings.kyc.android.sdk.sample_app.ui.nav.NavRoute
+import com.paywings.kyc.android.sdk.sample_app.ui.nav.graph.MAIN_ROUTE
 import com.paywings.kyc.android.sdk.sample_app.ui.screens.components.ScreenTopAppBarWithBackNavigation
 import com.paywings.kyc.android.sdk.sample_app.ui.screens.dialogs.settings.AppRestartRequiredDialog
+import com.paywings.kyc.android.sdk.sample_app.ui.screens.main.MainNav
 import com.paywings.kyc.android.sdk.sample_app.ui.theme.scaffoldWindowInsets
 import com.paywings.kyc.android.sdk.sample_app.util.Constants
 import com.paywings.oauth.android.sdk.initializer.PayWingsOAuthClient
@@ -57,7 +59,7 @@ object SettingsNav : NavRoute<SettingsViewModel> {
 }
 
 
-@OptIn(ExperimentalComposeUiApi::class)
+@OptIn(ExperimentalComposeUiApi::class, ExperimentalAnimationApi::class)
 @Composable
 fun SettingsScreen(viewModel: SettingsViewModel, onCloseApp: () -> Unit) {
 
@@ -70,8 +72,8 @@ fun SettingsScreen(viewModel: SettingsViewModel, onCloseApp: () -> Unit) {
         mutableStateOf(false)
     }
 
-    val navigateBack: () -> Unit = remember {
-        return@remember viewModel::navigateUp
+    val navigateToRoute: (route: String) -> Unit = remember {
+        return@remember viewModel::navigateToRoute
     }
 
     Scaffold(
@@ -82,7 +84,7 @@ fun SettingsScreen(viewModel: SettingsViewModel, onCloseApp: () -> Unit) {
                 onBackNavigation = {
                     when (showAppRestartDialog) {
                         true -> appRestartRequiredDialogState.show()
-                        false -> navigateBack()
+                        false -> navigateToRoute(MainNav.route)
                     }
                 }
             )
@@ -180,7 +182,7 @@ fun SettingsScreen(viewModel: SettingsViewModel, onCloseApp: () -> Unit) {
     BackHandler(enabled = true, onBack = {
         when (showAppRestartDialog) {
             true -> appRestartRequiredDialogState.show()
-            false -> navigateBack()
+            false -> navigateToRoute(MainNav.route)
         }
     })
 }

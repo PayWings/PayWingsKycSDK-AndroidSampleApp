@@ -1,6 +1,7 @@
 package com.paywings.kyc.android.sdk.sample_app.ui.screens.initialization
 
 import android.app.Application
+import android.util.Log
 import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -39,6 +40,13 @@ class InitializationViewModel @Inject constructor(
 
     var oauthInitializationRetryCount: Int = 0
 
+
+    //!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+    //!!!!! Option 1. Refresh Token is additionally encrypted before being stored inside secure storage and cannot be used without a passcode.
+    //!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+    /*
+    private val passcode = "123456" // This passcode must be stored securely (NOT HARDCODED) or input by User on opening the app.
+
     private val oauthInitializationCallback = object: OAuthInitializationCallback {
         override fun onFailure(error: OAuthErrorCode, errorMessage: String?) {
             if (oauthInitializationRetryCount < 2) {
@@ -50,23 +58,58 @@ class InitializationViewModel @Inject constructor(
         }
 
         override fun onSuccess() {
-            checkUserSignIn()
+            viewModelScope.launch {
+                when (PayWingsOAuthClient.instance.isUserSignIn()) {
+                    true -> {
+                        when (PayWingsOAuthClient.isSecuritySet()) {
+                            true -> PayWingsOAuthClient.unlock(
+                                passcode,
+                                onError = { errorMessage -> Log.d("OAuth", errorMessage ?: "") })
+
+                            false -> PayWingsOAuthClient.setupSecurity(passcode)
+                        }
+                        navigateToRoute(MAIN_ROUTE)
+                    }
+                    false -> navigateToRoute(OAUTH_ROUTE)
+                }
+            }
         }
     }
+     */
+    //!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+    //!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+
+
+
+    //!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+    //!!!!! Option 2. Refresh Token is stored in plain text inside secure storage.
+    //!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+    private val oauthInitializationCallback = object: OAuthInitializationCallback {
+        override fun onFailure(error: OAuthErrorCode, errorMessage: String?) {
+            if (oauthInitializationRetryCount < 2) {
+                oauthInitializationRetryCount++
+                oauthInitialization()
+            } else {
+                uiState = uiState.updateState(systemDialogUiState = SystemDialogUiState.ShowError(errorMessage = errorMessage?:"").asOneTimeEvent())
+            }
+        }
+
+        override fun onSuccess() {
+            viewModelScope.launch {
+                when (PayWingsOAuthClient.instance.isUserSignIn()) {
+                    true -> navigateToRoute(MAIN_ROUTE)
+                    false -> navigateToRoute(OAUTH_ROUTE)
+                }
+            }
+        }
+    }
+    //!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+    //!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 
     fun initialization(oauthApiKey: String, oauthDomain: String) {
         this.oauthApiKey = oauthApiKey
         this.oauthDomain = oauthDomain
         oauthInitialization()
-    }
-
-    private fun checkUserSignIn() {
-        viewModelScope.launch {
-            when (PayWingsOAuthClient.instance.isUserSignIn()) {
-                true -> navigateToRoute(MAIN_ROUTE)
-                false -> navigateToRoute(OAUTH_ROUTE)
-            }
-        }
     }
 
     private fun oauthInitialization() {
