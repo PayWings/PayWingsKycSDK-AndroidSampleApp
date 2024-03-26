@@ -1,15 +1,15 @@
 [versions]
 min-sdk = "26"
-target-sdk = "33"
+target-sdk = "34"
 compile-sdk = "34"
 
-androidGradlePlugin = "8.1.4"
+androidGradlePlugin = "8.3.1"
 kotlinGradlePlugin = "1.9.20"
 hiltGradlePlugin = "2.48"
 
 major = "1"
-minor = "0"
-patch = "1"
+minor = "1"
+patch = "0"
 
 daggerHilt = "2.48.1"
 

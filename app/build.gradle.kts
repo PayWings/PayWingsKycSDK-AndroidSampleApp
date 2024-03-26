@@ -14,7 +14,7 @@ android {
         minSdk = libs.versions.min.sdk.get().toInt()
         targetSdk = libs.versions.target.sdk.get().toInt()
         versionCode = 1
-        versionName = "1.0.1"
+        versionName = "1.1.0"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         vectorDrawables {
@@ -70,7 +70,7 @@ dependencies {
     implementation("androidx.compose.ui:ui-tooling-preview")
     implementation("androidx.compose.material3:material3")
     implementation("io.github.vanpra.compose-material-dialogs:datetime:0.9.0")
-    implementation("io.michaelrocks:libphonenumber-android:8.13.17")
+    implementation("io.michaelrocks:libphonenumber-android:8.13.28")
     implementation("com.github.JamalMulla:ComposePrefs3:1.0.4")
     implementation("androidx.datastore:datastore-preferences:1.0.0")
     implementation("androidx.preference:preference-ktx:1.2.1")
@@ -88,7 +88,7 @@ dependencies {
     implementation(libs.cpp)
 
     //PayWings Android SDK
-    implementation("com.paywings.kyc:android-sdk:1.0.1")
+    implementation("com.paywings.kyc:android-sdk:1.1.0")
     implementation("com.paywings.oauth:android-sdk:2.0.0")
 
 
